@@ -3,9 +3,10 @@ package com.airfox.fsm.pacman.ghost
 import android.util.Log
 import com.airfox.fsm.base.Action
 import com.airfox.fsm.base.State
+import com.airfox.fsm.base.StateImpl
 import com.airfox.fsm.logTag
 
-class Scatter(val position: Pair<Int, Int>): State {
+class Scatter(val position: Pair<Int, Int>): StateImpl() {
 
     constructor(): this(Pair(0,0))
 
@@ -45,7 +46,6 @@ class Scatter(val position: Pair<Int, Int>): State {
     override fun hashCode(): Int {
         return position.hashCode()
     }
-
 
     override fun toString(): String {
         return "${javaClass.simpleName}: ${position.first}/${position.second}"

@@ -16,5 +16,9 @@ abstract class StateImpl: State {
         return this
     }
 
+    override fun toString(): String {
+        return javaClass.simpleName
+    }
+
 }
 

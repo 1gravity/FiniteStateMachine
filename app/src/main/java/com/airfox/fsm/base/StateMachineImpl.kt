@@ -31,8 +31,6 @@ abstract class StateMachineImpl constructor(startState: State) : StateMachine {
      * state transition is needed)
      */
     @Synchronized override fun transition(action: Action): Observable<State> {
-        Log.i(logTag, "starting state transition from state ${theState.javaClass.simpleName} by action ${action.javaClass.simpleName}")
-
         theState = theState.exit(action)
 
         return states
