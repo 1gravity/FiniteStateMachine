@@ -20,6 +20,9 @@ class MainActivity : AppCompatActivity() {
 
     private var disposables: CompositeDisposable = CompositeDisposable()
 
+    @Inject lateinit var door1: Door
+    @Inject lateinit var door2: Door
+
     @Inject lateinit var ghost1: Ghost
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,6 +39,19 @@ class MainActivity : AppCompatActivity() {
 
             ghost1.transition(Actions.Start)
         }
+
+        Log.i(logTag, "Door 1")
+        door1.transition(Close)
+        door1.transition(Open)
+        door1.transition(Close)
+        door1.transition(Open)
+
+        Log.i(logTag, "Door 2")
+        door2.transition(Open)
+        door2.transition(Close)
+        door2.transition(Open)
+        door2.transition(Close)
+        door2.transition(Actions.PacmanEatsPill)
     }
 
     override fun onResume() {
