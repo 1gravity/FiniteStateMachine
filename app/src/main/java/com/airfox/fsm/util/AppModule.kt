@@ -1,22 +1,35 @@
 package com.airfox.fsm.util
 
-import com.airfox.fsm.Closed
 import com.airfox.fsm.Door
+import com.airfox.fsm.Opened
 import com.airfox.fsm.pacman.ghost.Ghost
+import com.airfox.fsm.pacman.pacman.Pacman
 import dagger.Module
 import dagger.Provides
+import javax.inject.Singleton
 
 @Module
 object AppModule {
 
     @Provides
-    fun provideDoor(): Door {
-        return Door(Closed)
+    @Singleton
+    fun provideLogger(): Logger {
+        return LoggerImpl()
     }
 
     @Provides
-    fun provideGhost(): Ghost {
-        return Ghost()
+    fun provideDoor(logger: Logger): Door {
+        return Door(logger, Opened)
+    }
+
+    @Provides
+    fun provideGhost(logger: Logger): Ghost {
+        return Ghost(logger)
+    }
+
+    @Provides
+    fun providePacman(logger: Logger): Pacman {
+        return Pacman(logger)
     }
 
 }

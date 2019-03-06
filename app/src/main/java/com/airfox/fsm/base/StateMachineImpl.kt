@@ -1,8 +1,7 @@
 package com.airfox.fsm.base
 
 import android.annotation.SuppressLint
-import android.util.Log
-import com.airfox.fsm.logTag
+import com.airfox.fsm.util.Logger
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import javax.inject.Singleton
@@ -10,13 +9,13 @@ import kotlin.properties.Delegates
 
 @Singleton
 @SuppressLint("CheckResult")
-abstract class StateMachineImpl constructor(startState: State) : StateMachine {
+abstract class StateMachineImpl(private val logger: Logger, startState: State) : StateMachine {
 
     private val states = BehaviorSubject.create<State>()
 
     private var theState by Delegates.observable(startState) { _, oldState, newState ->
         if (oldState != newState) {
-            Log.i(logTag, "change state: $oldState -> $newState")
+            logger.log("change state:   $oldState -> $newState")
             states.onNext(newState)
         }
     }
@@ -31,6 +30,8 @@ abstract class StateMachineImpl constructor(startState: State) : StateMachine {
      * state transition is needed)
      */
     @Synchronized override fun transition(action: Action): Observable<State> {
+        logger.log("trigger action: ${action.javaClass.simpleName}")
+
         theState = theState.exit(action)
 
         return states

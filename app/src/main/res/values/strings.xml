@@ -1,3 +1,6 @@
 <resources>
-    <string name="app_name">FiniteStateMachine</string>
+    <string name="app_name">Finite State Machine</string>
+    <string name="title_door">Door</string>
+    <string name="title_pacman">Pacman</string>
+    <string name="title_android">Android</string>
 </resources>

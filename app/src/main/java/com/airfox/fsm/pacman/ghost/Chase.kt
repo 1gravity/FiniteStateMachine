@@ -1,35 +1,27 @@
 package com.airfox.fsm.pacman.ghost
 
-import android.util.Log
 import com.airfox.fsm.base.Action
 import com.airfox.fsm.base.State
-import com.airfox.fsm.base.StateImpl
-import com.airfox.fsm.logTag
+import com.airfox.fsm.pacman.Collision
+import com.airfox.fsm.pacman.MoveTo
+import com.airfox.fsm.pacman.PacmanEatsPill
 
-class Chase(val position: Pair<Int, Int>): StateImpl() {
+class Chase(val position: Pair<Int, Int>): State {
 
     constructor(): this(Pair(0,0))
 
     override fun enter(previous: State, action: Action): State {
         return when (action) {
-            is Actions.MoveTo -> {
-                Log.i(logTag, "Ghost moved to ${action.pos.first}/${action.pos.second}")
-                Chase(action.pos)
-            }
-            is Actions.PacmanEatsPill, Actions.CollisionWithPacman -> exit(action)
+            is MoveTo, PacmanEatsPill, Collision -> exit(action)
             else -> this
         }
     }
 
     override fun exit(action: Action): State {
         return when (action) {
-            is Actions.Start -> Chase(Pair(0, 0)).enter(this, action)
-            is Actions.MoveTo -> {
-                Log.i(logTag, "Ghost moved to ${action.pos.first}/${action.pos.second}")
-                Chase(action.pos)
-            }
-            is Actions.PacmanEatsPill -> Scatter().enter(this, action)
-            is Actions.CollisionWithPacman -> Dead.enter(this, action)
+            is MoveTo -> Chase(action.pos)
+            is PacmanEatsPill -> Scatter(position).enter(this, action)
+            is Collision -> Celebrate.enter(this, action)
             else -> this
         }
     }

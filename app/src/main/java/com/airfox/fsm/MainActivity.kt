@@ -1,92 +1,146 @@
 package com.airfox.fsm
 
 import android.annotation.SuppressLint
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import androidx.annotation.MainThread
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.airfox.fsm.base.State
-import com.airfox.fsm.ui.main.MainFragment
+import com.airfox.fsm.pacman.Collision
+import com.airfox.fsm.pacman.MoveTo
+import com.airfox.fsm.pacman.Start
+import com.airfox.fsm.pacman.ghost.Chase
+import com.airfox.fsm.pacman.ghost.Dead
+import com.airfox.fsm.pacman.ghost.Ghost
+import com.airfox.fsm.pacman.ghost.Scatter
+import com.airfox.fsm.pacman.pacman.Pacman
+import com.airfox.fsm.util.DaggerFactory
+import com.airfox.fsm.util.Logger
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import com.airfox.fsm.pacman.ghost.*
-import com.airfox.fsm.util.DaggerFactory
+import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-
-const val logTag = "FiniteStateMachine"
 
 @SuppressLint("CheckResult")
 class MainActivity : AppCompatActivity() {
 
     private var disposables: CompositeDisposable = CompositeDisposable()
 
-    @Inject lateinit var door1: Door
-    @Inject lateinit var door2: Door
+    @Inject lateinit var logger: Logger
 
-    @Inject lateinit var ghost1: Ghost
+    @Inject lateinit var door: Door
+
+    @Inject lateinit var pacman: Pacman
+
+    @Inject lateinit var blinky: Ghost
+    @Inject lateinit var pinky: Ghost
+    @Inject lateinit var inky: Ghost
+    @Inject lateinit var clyde: Ghost
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.main_activity)
-
         DaggerFactory.component.inject(this)
 
-        if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.container, MainFragment.newInstance())
-                .commitNow()
+        setContentView(R.layout.activity_main)
 
-            ghost1.transition(Actions.Start)
-        }
+        // bottom navigation
+        nav_view.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
 
-        Log.i(logTag, "Door 1")
-        door1.transition(Close)
-        door1.transition(Open)
-        door1.transition(Close)
-        door1.transition(Open)
+        // RecyclerView for messages
+        val messages = ArrayList<String>()
+        rv_message.adapter = MessageAdapter(messages)
+        rv_message.layoutManager = LinearLayoutManager(this)
+        rv_message.setHasFixedSize(true)
 
-        Log.i(logTag, "Door 2")
-        door2.transition(Open)
-        door2.transition(Close)
-        door2.transition(Open)
-        door2.transition(Close)
-        door2.transition(Actions.PacmanEatsPill)
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        ghost1.getStates()
-            .distinctUntilChanged()
+        logger.logs()
             .doOnSubscribe { disposables.add(it) }
+            .debounce(250, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { dispatchState(it) }
+            .subscribe {
+                rv_message.adapter = MessageAdapter(it)
+            }
     }
 
-    override fun onPause() {
-        super.onPause()
-
+    override fun onDestroy() {
+        super.onDestroy()
         disposables.clear()
     }
 
+    private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+        logger.reset()
+        when (item.itemId) {
+            R.id.navigation_door -> {
+                doorFSM()
+                return@OnNavigationItemSelectedListener true
+            }
+            R.id.navigation_pacman -> {
+                pacmanFSM()
+                return@OnNavigationItemSelectedListener true
+            }
+            R.id.navigation_android -> {
+                androidFSM()
+                return@OnNavigationItemSelectedListener true
+            }
+        }
+        false
+    }
+
+    private fun doorFSM() {
+        val random = Random()
+        Flowable.intervalRange(1, 10, 0, 500, TimeUnit.MILLISECONDS)
+            .map { random.nextInt() % 2 == 0 }
+            .subscribe { even ->
+                val newState = if (even) Close else Open
+                door.transition(newState)
+            }
+    }
+
+    private fun pacmanFSM() {
+        pacman.transition(Start)
+        blinky.transition(Start)
+        pinky.transition(Start)
+        inky.transition(Start)
+        clyde.transition(Start)
+        observeGhost(blinky)
+        observeGhost(pinky)
+        observeGhost(inky)
+        observeGhost(clyde)
+    }
+
+    private fun androidFSM() {
+
+    }
+
+    private fun observeGhost(ghost: Ghost) {
+        ghost.getStates()
+            .doOnSubscribe { disposables.add(it) }
+            .distinctUntilChanged()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { dispatchState(ghost ,it) }
+    }
+
     @MainThread
-    private fun dispatchState(state: State) {
-        Log.i(logTag, "dispatching state: ${state.javaClass.simpleName}")
+    private fun dispatchState(ghost: Ghost, state: State) {
+        logger.log("dispatching state: ${state.javaClass.simpleName}")
 
         when (state) {
             is Chase -> {
                 // try to get closer to the Pacman
                 val newPos = with(state.position) { Pair(first, second + 1) }
                 when (newPos.second) {
-                    in 0..10 -> ghost1.transition(Actions.MoveTo(newPos))
-                    else -> ghost1.transition(Actions.CollisionWithPacman)
+                    in 0..10 -> ghost.transition(MoveTo(newPos))
+                    else -> ghost.transition(Collision)
                 }
             }
             is Scatter -> {
                 // try to get away from the Pacman
                 val newPos = state.position
-                ghost1.transition(Actions.MoveTo(newPos))
+                ghost.transition(MoveTo(newPos))
             }
             is Dead -> {
                 // ghost is dead -> show some "deadly" animation and remove it from the game
