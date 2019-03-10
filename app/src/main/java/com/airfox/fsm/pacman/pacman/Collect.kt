@@ -6,10 +6,12 @@ import com.airfox.fsm.base.StateImpl
 import com.airfox.fsm.pacman.Collision
 import com.airfox.fsm.pacman.MoveTo
 import com.airfox.fsm.pacman.PacmanEatsPill
+import com.airfox.fsm.pacman.Position
 
-class Collect(val pos: Pair<Int, Int>): StateImpl() {
+class Collect(val pos: Position): StateImpl() {
 
-    constructor(): this(Pair(0,0))
+    // the start position of the Pacman is [9, 9]
+    constructor(): this(Position(9, 9))
 
     override fun enter(previous: State, action: Action): State {
         return when (action) {
@@ -41,7 +43,7 @@ class Collect(val pos: Pair<Int, Int>): StateImpl() {
     }
 
     override fun toString(): String {
-        return "${javaClass.simpleName}: ${pos.first}/${pos.second}"
+        return "${javaClass.simpleName}: ${pos.x}/${pos.y}"
     }
 
 }

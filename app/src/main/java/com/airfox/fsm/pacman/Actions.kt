@@ -6,9 +6,9 @@ import com.airfox.fsm.base.Action
 object Start : Action
 
 // Move to a new pos.
-class MoveTo(val pos: Pair<Int, Int>) : Action {
+class MoveTo(val pos: Position) : Action {
     override fun toString(): String {
-        return "${javaClass.simpleName}: ${pos.first}/${pos.second}"
+        return "${javaClass.simpleName}: ${pos.x}/${pos.y}"
     }
 }
 

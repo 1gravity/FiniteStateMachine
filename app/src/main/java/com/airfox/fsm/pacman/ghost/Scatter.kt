@@ -5,9 +5,10 @@ import com.airfox.fsm.base.State
 import com.airfox.fsm.base.StateImpl
 import com.airfox.fsm.pacman.Collision
 import com.airfox.fsm.pacman.MoveTo
+import com.airfox.fsm.pacman.Position
 import com.airfox.fsm.pacman.PowerPillEnds
 
-class Scatter(val pos: Pair<Int, Int>): StateImpl() {
+class Scatter(val pos: Position): StateImpl() {
 
     override fun enter(previous: State, action: Action): State {
         return when (action) {
@@ -39,7 +40,7 @@ class Scatter(val pos: Pair<Int, Int>): StateImpl() {
     }
 
     override fun toString(): String {
-        return "${javaClass.simpleName}: ${pos.first}/${pos.second}"
+        return "${javaClass.simpleName}: ${pos.x}/${pos.y}"
     }
 
 }

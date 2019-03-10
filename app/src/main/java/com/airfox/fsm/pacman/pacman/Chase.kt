@@ -4,9 +4,10 @@ import com.airfox.fsm.base.Action
 import com.airfox.fsm.base.State
 import com.airfox.fsm.pacman.Collision
 import com.airfox.fsm.pacman.MoveTo
+import com.airfox.fsm.pacman.Position
 import com.airfox.fsm.pacman.PowerPillEnds
 
-class Chase(val pos: Pair<Int, Int>): State {
+class Chase(val pos: Position): State {
 
     override fun enter(previous: State, action: Action): State {
         return when (action) {
@@ -39,7 +40,7 @@ class Chase(val pos: Pair<Int, Int>): State {
 
 
     override fun toString(): String {
-        return "${javaClass.simpleName}: ${pos.first}/${pos.second}"
+        return "${javaClass.simpleName}: ${pos.x}/${pos.y}"
     }
 
 }

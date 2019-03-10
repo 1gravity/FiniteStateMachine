@@ -5,10 +5,12 @@ import com.airfox.fsm.base.State
 import com.airfox.fsm.pacman.Collision
 import com.airfox.fsm.pacman.MoveTo
 import com.airfox.fsm.pacman.PacmanEatsPill
+import com.airfox.fsm.pacman.Position
 
-class Chase(val pos: Pair<Int, Int>): State {
+class Chase(val pos: Position) : State {
 
-    constructor(): this(Pair(0,0))
+    // the start position of a Ghost is [0, 0]
+    constructor(): this(Position(0,0))
 
     override fun enter(previous: State, action: Action): State {
         return when (action) {
@@ -41,7 +43,7 @@ class Chase(val pos: Pair<Int, Int>): State {
 
 
     override fun toString(): String {
-        return "${javaClass.simpleName}: ${pos.first}/${pos.second}"
+        return "${javaClass.simpleName}: ${pos.x}/${pos.y}"
     }
 
 }
