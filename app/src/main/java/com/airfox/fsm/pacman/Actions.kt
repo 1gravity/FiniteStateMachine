@@ -5,8 +5,12 @@ import com.airfox.fsm.base.Action
 // Start the game.
 object Start : Action
 
-// Move to a new position.
-class MoveTo(val pos: Pair<Int, Int>) : Action
+// Move to a new pos.
+class MoveTo(val pos: Pair<Int, Int>) : Action {
+    override fun toString(): String {
+        return "${javaClass.simpleName}: ${pos.first}/${pos.second}"
+    }
+}
 
 // Pac-Man has eaten a power pill.
 object PacmanEatsPill : Action

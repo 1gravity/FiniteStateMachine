@@ -15,7 +15,7 @@ abstract class StateMachineImpl(private val logger: Logger, startState: State) :
 
     private var theState by Delegates.observable(startState) { _, oldState, newState ->
         if (oldState != newState) {
-            logger.log("change state:   $oldState -> $newState")
+            logger.log("${javaClass.simpleName} state:  $oldState -> $newState")
             states.onNext(newState)
         }
     }
@@ -30,7 +30,7 @@ abstract class StateMachineImpl(private val logger: Logger, startState: State) :
      * state transition is needed)
      */
     @Synchronized override fun transition(action: Action): Observable<State> {
-        logger.log("trigger action: ${action.javaClass.simpleName}")
+        logger.log("${javaClass.simpleName} action: ${action.javaClass.simpleName}")
 
         theState = theState.exit(action)
 

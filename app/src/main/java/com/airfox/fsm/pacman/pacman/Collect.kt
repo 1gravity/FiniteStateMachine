@@ -7,7 +7,7 @@ import com.airfox.fsm.pacman.Collision
 import com.airfox.fsm.pacman.MoveTo
 import com.airfox.fsm.pacman.PacmanEatsPill
 
-class Collect(val position: Pair<Int, Int>): StateImpl() {
+class Collect(val pos: Pair<Int, Int>): StateImpl() {
 
     constructor(): this(Pair(0,0))
 
@@ -21,7 +21,7 @@ class Collect(val position: Pair<Int, Int>): StateImpl() {
     override fun exit(action: Action): State {
         return when (action) {
             is MoveTo -> Collect(action.pos)
-            is PacmanEatsPill -> Chase(position).enter(this, action)
+            is PacmanEatsPill -> Chase(pos).enter(this, action)
             is Collision -> Dead.enter(this, action)
             else -> this
         }
@@ -31,17 +31,17 @@ class Collect(val position: Pair<Int, Int>): StateImpl() {
         return when {
             other == null -> false
             other !is Collect -> false
-            other.position != position -> false
+            other.pos != pos -> false
             else -> true
         }
     }
 
     override fun hashCode(): Int {
-        return position.hashCode()
+        return pos.hashCode()
     }
 
     override fun toString(): String {
-        return "${javaClass.simpleName}: ${position.first}/${position.second}"
+        return "${javaClass.simpleName}: ${pos.first}/${pos.second}"
     }
 
 }
