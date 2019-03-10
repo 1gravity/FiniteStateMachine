@@ -7,16 +7,16 @@ import com.airfox.fsm.pacman.Collision
 import com.airfox.fsm.pacman.MoveTo
 import com.airfox.fsm.pacman.Position
 import com.airfox.fsm.pacman.Start
-import com.airfox.fsm.pacman.ghost.Chase
-import com.airfox.fsm.pacman.ghost.Dead
 import com.airfox.fsm.pacman.ghost.Ghost
-import com.airfox.fsm.pacman.ghost.Scatter
 import com.airfox.fsm.pacman.pacman.Collect
 import com.airfox.fsm.pacman.pacman.Pacman
 import com.airfox.fsm.util.Logger
-import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.Flowable
+import io.reactivex.schedulers.Schedulers
 import java.util.ArrayList
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import kotlin.random.Random
 
 class PacmanModule @Inject constructor(private var pacman: Pacman,
                                        private var blinky: Ghost,
@@ -27,7 +27,7 @@ class PacmanModule @Inject constructor(private var pacman: Pacman,
 ) : ActivityModule() {
 
     fun startGame() {
-        startPacman(pacman)
+        startPacman()
         startGhost(blinky)
         startGhost(pinky)
         startGhost(inky)
@@ -35,67 +35,99 @@ class PacmanModule @Inject constructor(private var pacman: Pacman,
     }
 
     @SuppressLint("CheckResult")
-    private fun <T : Pacman> startPacman(stateMachine: T) {
-        stateMachine.transition(Start)
+    private fun startPacman() {
+        pacman.transition(Start)
             .doOnSubscribe { addDisposable(it) }
+            .subscribeOn(Schedulers.computation())
             .distinctUntilChanged()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { dispatchPacmanState(stateMachine, it) }
+            .subscribe { dispatchPacmanState(it) }
     }
 
     @MainThread
-    private fun dispatchPacmanState(pacman: Pacman, state: State) {
-        logger.log("dispatching state: ${state.javaClass.simpleName}")
-
+    private fun dispatchPacmanState(state: State) {
         when (state) {
-            is Collect -> {
-                state.pos
-            }
-            is Chase -> {
+            is Collect -> movePacman()
+            is com.airfox.fsm.pacman.pacman.Chase -> movePacman()
+            is com.airfox.fsm.pacman.pacman.Dead -> logger.log("Pacman is dead -> GAME OVER")
+        }
+    }
 
-            }
-            is Dead -> logger.log("Pacman is dead -> Game over}")
+    private fun movePacman() {
+        when (isCollision()) {
+            true -> collision()
+            false ->
+                getNextPosition(pacman.getPosition())?.let { position ->
+                    Flowable.just(1).delay(250, TimeUnit.MILLISECONDS).subscribe {
+                        pacman.transition(MoveTo(position))
+                    }
+                }
         }
     }
 
     @SuppressLint("CheckResult")
-    private fun <T : Ghost> startGhost(stateMachine: T) {
+    private fun startGhost(stateMachine: Ghost) {
         stateMachine.transition(Start)
             .doOnSubscribe { addDisposable(it) }
+            .subscribeOn(Schedulers.computation())
             .distinctUntilChanged()
-            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { dispatchGhostState(stateMachine, it) }
     }
 
     @MainThread
     private fun dispatchGhostState(ghost: Ghost, state: State) {
-        logger.log("dispatching state: ${state.javaClass.simpleName}")
-
         when (state) {
-            is Chase -> {
-                // try to get closer to the Pacman
-                val newPos = with(state.pos) { Position(x, y + 1) }
-                when (newPos.y) {
-                    in 0..10 -> ghost.transition(MoveTo(newPos))
-                    else -> ghost.transition(Collision)
-                }
-            }
-            is Scatter -> {
-                // try to get away from the Pacman
-                val newPos = state.pos
-                ghost.transition(MoveTo(newPos))
-            }
-            is Dead -> logger.log("Ghost is dead")
+            is com.airfox.fsm.pacman.ghost.Chase -> moveGhost(ghost)
+            is com.airfox.fsm.pacman.ghost.Scatter -> moveGhost(ghost)
+            is com.airfox.fsm.pacman.ghost.Dead -> logger.log("Ghost is dead")
         }
     }
 
-    private fun findPossibleMoves(pos: Position): List<Position> {
+    private fun moveGhost(ghost: Ghost) {
+        when (isCollision()) {
+            true -> collision()
+            false ->
+                getNextPosition(ghost.getPosition())?.let { position ->
+                    Flowable.just(1).delay(500, TimeUnit.MILLISECONDS)
+                        .subscribe { ghost.transition(MoveTo(position)) }
+                }
+        }
+    }
+
+    private fun isCollision(): Boolean {
+        return when (pacman.getPosition()) {
+            blinky.getPosition(),
+            pinky.getPosition(),
+            inky.getPosition(),
+            clyde.getPosition() -> true
+            else -> false
+        }
+    }
+
+    private fun collision() {
+        pacman.transition(Collision)
+        blinky.transition(Collision)
+        pinky.transition(Collision)
+        inky.transition(Collision)
+        clyde.transition(Collision)
+    }
+
+    private fun getNextPosition(pos: Position?) : Position? {
+        return findPossibleMoves(pos).run {
+            val newPos = when (size) {
+                0 -> 0
+                else -> Random.nextInt(0, size)
+            }
+            this[newPos]
+        }
+    }
+
+    private fun findPossibleMoves(pos: Position?): List<Position> {
         return ArrayList<Position>().apply {
-            when {
-                pos.x < 9 -> add(Position(pos.x + 1, pos.y))
-                pos.x > 1 -> add(Position(pos.x - 1, pos.y))
-                pos.y < 9 -> add(Position(pos.x, pos.y + 1))
-                pos.y > 1 -> add(Position(pos.x, pos.y - 1))
+            pos?.run {
+                if (x < 9) add(Position(x + 1, y))
+                if (x > 0) add(Position(x - 1, y))
+                if (y < 9) add(Position(x, y + 1))
+                if (y > 0) add(Position(x, y - 1))
             }
         }
     }

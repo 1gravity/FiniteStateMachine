@@ -7,9 +7,9 @@ import com.airfox.fsm.base.StateMachineImpl
 import com.airfox.fsm.util.Logger
 import javax.inject.Inject
 
-object Open : Action
+object Open : Action()
 
-object Close : Action
+object Close : Action()
 
 object Closed : StateImpl() {
     override fun exit(action: Action): State {

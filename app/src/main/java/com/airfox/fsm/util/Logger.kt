@@ -34,7 +34,9 @@ class LoggerImpl @Inject constructor(): Logger {
     override fun log(msg: String) {
         Log.i(logTag, msg)
         log.onNext(msg)
-        logCollection.add(msg)
+        synchronized(logCollection) {
+            logCollection.add(msg)
+        }
         logs.onNext(logCollection)
     }
 

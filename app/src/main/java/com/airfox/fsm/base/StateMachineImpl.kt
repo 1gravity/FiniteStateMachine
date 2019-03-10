@@ -30,7 +30,7 @@ abstract class StateMachineImpl(private val logger: Logger, startState: State) :
      * state transition is needed)
      */
     @Synchronized override fun transition(action: Action): Observable<State> {
-        logger.log("${javaClass.simpleName} action: ${action.javaClass.simpleName}")
+        logger.log("${javaClass.simpleName} action: $action")
 
         theState = theState.exit(action)
 
