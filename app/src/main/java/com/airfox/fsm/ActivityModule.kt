@@ -28,6 +28,8 @@ abstract class ActivityModule : LifecycleObserver {
         activity.lifecycle.addObserver(this)
     }
 
+    abstract fun start()
+
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     @CallSuper
     open fun onPause() {

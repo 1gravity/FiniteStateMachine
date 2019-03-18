@@ -2,7 +2,8 @@ package com.airfox.fsm.base
 
 /**
  * An Action triggers a State transition.
- * We could implement it as simple marker interface but we want to override the toString method.
+ * We could implement this as simple marker interface (like Clonable or Serializable)
+ * but we want to override the toString() method.
  */
 open class Action {
     override fun toString(): String {

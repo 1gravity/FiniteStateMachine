@@ -26,7 +26,7 @@ class PacmanModule @Inject constructor(private var pacman: Pacman,
                                        var logger: Logger
 ) : ActivityModule() {
 
-    fun startGame() {
+    override fun start() {
         startPacman()
         startGhost(blinky)
         startGhost(pinky)

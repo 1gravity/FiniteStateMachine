@@ -1,0 +1,111 @@
+<FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/controller_container"
+        android:background="@drawable/airfox_background"
+        android:fitsSystemWindows="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <!-- Splash screen-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:padding="48dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <ScrollView
+                android:id="@+id/sv_root"
+                android:fillViewport="true"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginBottom="24dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/btn_continue">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                <Space
+                        android:id="@+id/spacer1"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/logo"
+                        app:layout_constraintHorizontal_weight="25"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/logo"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:scaleType="fitCenter"
+                        app:layout_constraintBottom_toTopOf="@+id/tv_title"
+                        app:layout_constraintEnd_toStartOf="@+id/spacer2"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintHorizontal_weight="50"
+                        app:layout_constraintStart_toEndOf="@+id/spacer1"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_weight="50"
+                        app:srcCompat="@drawable/airfox_logo_alt_white" />
+
+                <Space
+                        android:id="@+id/spacer2"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_weight="25"
+                        app:layout_constraintStart_toEndOf="@+id/logo" />
+
+                <TextView
+                        android:id="@+id/tv_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/splash_screen_title"
+                        android:textAlignment="center"
+                        android:textSize="28sp"
+                        android:textColor="@color/airfox_white"
+                        android:layout_marginBottom="12dp"
+                        app:layout_constraintBottom_toTopOf="@+id/tv_subtitle"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/logo" />
+
+                <TextView
+                        android:id="@+id/tv_subtitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:text="@string/splash_screen_msg"
+                        android:textColor="@color/airfox_white"
+                        android:textAlignment="center"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_title"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintVertical_weight="55" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </ScrollView>
+
+        <Button
+                android:id="@+id/btn_continue"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="20dp"
+                android:text="@string/btn_continue"
+                android:background="@color/airfox_dark"
+                android:textColor="@color/airfox_white"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

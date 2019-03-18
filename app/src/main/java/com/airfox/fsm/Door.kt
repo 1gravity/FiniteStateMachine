@@ -11,27 +11,35 @@ object Open : Action()
 
 object Close : Action()
 
-object Closed : StateImpl() {
-    override fun exit(action: Action): State {
-        return if (action is Open) Opened.enter(this, action) else this
-    }
+object Opened : StateImpl() {
+    override fun exit(action: Action): State = if (action is Close) Closed.enter(this, action) else this
 }
 
-object Opened : StateImpl() {
-    override fun exit(action: Action): State {
-        return if (action is Close) Closed.enter(this, action) else this
-   }
+object Closed : StateImpl() {
+    override fun exit(action: Action): State = if (action is Open) Opened.enter(this, action) else this
 }
 
 class Door @Inject constructor(logger: Logger, initialState: State) : StateMachineImpl(logger, initialState)
 
-// this is a more rigid implementation of the Closed state
-//object Closed : StateImpl() {
-//    override fun exit(action: Action): State {
+/**
+ * This is a more rigid implementation of the Closed state.
+ */
+//object ClosedSophisticated : StateImpl() {
+//
+//    override fun enter(previous: State, action: Action): State {
 //        return when(action) {
-//            is Open -> Opened.enter(this, action)
-//            is Close -> this
+//            is Open -> this
+//            // is Close -> this
 //            else -> throw IllegalStateException()
 //        }
 //    }
+//
+//    override fun exit(action: Action): State {
+//        return when(action) {
+//            is Open -> Opened.enter(this, action)
+//            // is Close -> this
+//            else -> throw IllegalStateException()
+//        }
+//    }
+//
 //}

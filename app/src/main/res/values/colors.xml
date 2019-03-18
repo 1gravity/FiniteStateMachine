@@ -3,4 +3,13 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+
+    <color name="airfox_bg">#FF2DB5E2</color>
+    <color name="airfox_white">#FFFFFFFF</color>
+    <color name="airfox_gray">#FFCAC9D6</color>
+    <color name="airfox_dark">#FF2C295A</color>
+    <color name="airfox_blue">#FF0DA8DB</color>
+    <color name="airfox_green">#FF4ECFB2</color>
+    <color name="airfox_red">#FFD9485A</color>
+    <color name="airfox_orange">#FFEFA975</color>
 </resources>

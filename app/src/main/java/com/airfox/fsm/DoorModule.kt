@@ -9,7 +9,7 @@ import kotlin.random.Random
 class DoorModule @Inject constructor(private var door: Door) : ActivityModule() {
 
     @SuppressLint("CheckResult")
-    fun start() {
+    override fun start() {
         Flowable.intervalRange(1, 10, 0, 500, TimeUnit.MILLISECONDS)
             .map { Random.nextInt() % 2 == 0 }
             .subscribe { even ->

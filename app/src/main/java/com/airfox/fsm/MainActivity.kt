@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity() {
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_pacman -> {
-                pacmanModule.startGame()
+                pacmanModule.start()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_android -> {
