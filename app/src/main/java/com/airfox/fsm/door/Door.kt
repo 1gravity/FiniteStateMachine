@@ -1,4 +1,4 @@
-package com.airfox.fsm
+package com.airfox.fsm.door
 
 import com.airfox.fsm.base.Action
 import com.airfox.fsm.base.State

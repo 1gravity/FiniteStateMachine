@@ -1,7 +1,7 @@
 package com.airfox.fsm.util
 
-import com.airfox.fsm.Door
-import com.airfox.fsm.Opened
+import com.airfox.fsm.door.Door
+import com.airfox.fsm.door.Opened
 import com.airfox.fsm.pacman.ghost.Ghost
 import com.airfox.fsm.pacman.pacman.Pacman
 import dagger.Module

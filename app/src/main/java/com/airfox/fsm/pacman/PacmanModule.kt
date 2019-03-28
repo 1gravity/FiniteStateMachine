@@ -1,12 +1,9 @@
-package com.airfox.fsm
+package com.airfox.fsm.pacman
 
 import android.annotation.SuppressLint
 import androidx.annotation.MainThread
+import com.airfox.fsm.ActivityModule
 import com.airfox.fsm.base.State
-import com.airfox.fsm.pacman.Collision
-import com.airfox.fsm.pacman.MoveTo
-import com.airfox.fsm.pacman.Position
-import com.airfox.fsm.pacman.Start
 import com.airfox.fsm.pacman.ghost.Ghost
 import com.airfox.fsm.pacman.pacman.Collect
 import com.airfox.fsm.pacman.pacman.Pacman

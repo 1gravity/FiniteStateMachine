@@ -5,6 +5,16 @@
     <string name="title_android">Android</string>
 
     <string name="splash_screen_title">Welcome to Droidcon!</string>
-    <string name="splash_screen_msg">I hope you\'re having fun and lean\nsome new stuff like using finite state machine\nto get your app flows under control.</string>
+    <string name="splash_screen_msg">I hope you\'re having fun and learn\nsome new stuff like using finite state machine\nto get your app flows under control.</string>
     <string name="btn_continue">Let\'s get started</string>
+
+    <string name="authentication_error">Authentication failed. Please try again later.</string>
+
+    <string name="connecting">Connecting…</string>
+    <string name="loading">Loading…</string>
+
+    <string name="close">Close</string>
+
+    <string name="offline_warn">You are offline!</string>
+    <string name="offline_dialog_message">You are offline! Turn on data to have access to all awesome features.</string>
 </resources>

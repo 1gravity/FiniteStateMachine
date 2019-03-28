@@ -1,8 +1,8 @@
-package com.airfox.fsm
+package com.airfox.fsm.android
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import com.airfox.fsm.android.AndroidActivity1
+import com.airfox.fsm.ActivityModule
 import javax.inject.Inject
 
 @SuppressLint("CheckResult")

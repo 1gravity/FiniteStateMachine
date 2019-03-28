@@ -1,6 +1,7 @@
-package com.airfox.fsm
+package com.airfox.fsm.door
 
 import android.annotation.SuppressLint
+import com.airfox.fsm.ActivityModule
 import io.reactivex.Flowable
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -12,8 +13,8 @@ class DoorModule @Inject constructor(private var door: Door) : ActivityModule() 
     override fun start() {
         Flowable.intervalRange(1, 10, 0, 500, TimeUnit.MILLISECONDS)
             .map { Random.nextInt() % 2 == 0 }
-            .subscribe { even ->
-                val newState = if (even) Close else Open
+            .map { even -> if (even) Close else Open }
+            .subscribe { newState ->
                 door.transition(newState)
             }
     }

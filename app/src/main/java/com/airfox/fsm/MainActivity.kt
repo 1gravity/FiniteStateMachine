@@ -2,8 +2,15 @@ package com.airfox.fsm
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.airfox.fsm.android.AndroidModule
+import com.airfox.fsm.door.DoorModule
+import com.airfox.fsm.pacman.PacmanModule
 import com.airfox.fsm.util.DaggerFactory
 import com.airfox.fsm.util.Logger
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -41,10 +48,6 @@ class MainActivity : AppCompatActivity() {
         rv_message.layoutManager = LinearLayoutManager(this)
         rv_message.setHasFixedSize(true)
 
-        doorModule.registerActivity(this)
-        pacmanModule.registerActivity(this)
-        androidModule.registerActivity(this)
-
         logger.logs()
             .doOnSubscribe { disposables.add(it) }
             .debounce(250, TimeUnit.MILLISECONDS)
@@ -52,6 +55,10 @@ class MainActivity : AppCompatActivity() {
             .subscribe {
                 rv_message.adapter = MessageAdapter(it)
             }
+
+        doorModule.registerActivity(this)
+        pacmanModule.registerActivity(this)
+        androidModule.registerActivity(this)
     }
 
     override fun onDestroy() {
@@ -61,21 +68,34 @@ class MainActivity : AppCompatActivity() {
 
     private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         logger.reset()
-        when (item.itemId) {
-            R.id.navigation_door -> {
-                doorModule.start()
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.navigation_pacman -> {
-                pacmanModule.start()
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.navigation_android -> {
-                androidModule.start()
-                return@OnNavigationItemSelectedListener true
-            }
+        val module = when (item.itemId) {
+            R.id.navigation_door -> doorModule
+            R.id.navigation_pacman -> pacmanModule
+            R.id.navigation_android -> androidModule
+            else -> null
         }
-        false
+        return@OnNavigationItemSelectedListener module?.run {
+            start()
+            true
+        }?: false
     }
+
+}
+
+class MessageAdapter(private val messages: List<String>) : RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
+
+    class ViewHolder(val textView: TextView) : RecyclerView.ViewHolder(textView)
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val textView = LayoutInflater.from(parent.context)
+            .inflate(R.layout.message_view_item, parent, false) as TextView
+        return ViewHolder(textView)
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.textView.text = messages[position]
+    }
+
+    override fun getItemCount() = messages.size
 
 }
