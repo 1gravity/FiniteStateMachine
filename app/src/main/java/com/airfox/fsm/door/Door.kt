@@ -29,7 +29,6 @@ class Door @Inject constructor(logger: Logger, initialState: State) : StateMachi
 //    override fun enter(previous: State, action: Action): State {
 //        return when(action) {
 //            is Open -> this
-//            // is Close -> this
 //            else -> throw IllegalStateException()
 //        }
 //    }
@@ -37,7 +36,6 @@ class Door @Inject constructor(logger: Logger, initialState: State) : StateMachi
 //    override fun exit(action: Action): State {
 //        return when(action) {
 //            is Open -> Opened.enter(this, action)
-//            // is Close -> this
 //            else -> throw IllegalStateException()
 //        }
 //    }
