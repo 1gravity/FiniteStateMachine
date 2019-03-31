@@ -153,9 +153,9 @@ class AndroidActivity : AppCompatActivity() {
 
     private fun initializeApp() {
         showAndHide(false, false, false, false)
-        Observable.intervalRange(0, 5, 0, 1, TimeUnit.SECONDS)
+        Observable.intervalRange(0, 5, 0, 2, TimeUnit.SECONDS)
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnNext { if (it < 4) progressDialogHolder.showLoadingDialog(msg[it.toInt()]) }
+            .doOnNext { if (it < 4) progressDialogHolder.showOrUpdateLoadingDialog(msg[it.toInt()]) }
             .doOnComplete {
                 progressDialogHolder.dismissDialog()
                 stateMachine.transition(Initialized)

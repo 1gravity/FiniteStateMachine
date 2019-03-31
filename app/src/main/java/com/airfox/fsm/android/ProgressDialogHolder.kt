@@ -14,6 +14,14 @@ class ProgressDialogHolder(private val context: Context) {
 
     private var progressDialog: ProgressDialog? = null
 
+    fun showOrUpdateLoadingDialog(@StringRes stringResource: Int) {
+        if (isProgressDialogShowing()) {
+            progressDialog?.setMessage(context.getString(stringResource))
+        } else {
+            showLoadingDialog(stringResource)
+        }
+    }
+
     private fun showLoadingDialog(message: String) {
         dismissDialog()
 

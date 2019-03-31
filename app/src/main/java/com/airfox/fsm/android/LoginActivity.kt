@@ -34,7 +34,7 @@ class LoginActivity : AppCompatActivity() {
         btn_login.setOnClickListener {
             Single.fromCallable { verifyLogin() }
                 .doOnSubscribe { progressDialogHolder.showLoadingDialog(R.string.logging_in) }
-                .delay(1, TimeUnit.SECONDS)
+                .delay(5, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doFinally { progressDialogHolder.dismissDialog() }
                 .subscribe( { result ->
