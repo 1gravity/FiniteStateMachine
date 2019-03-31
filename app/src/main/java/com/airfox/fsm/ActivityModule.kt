@@ -44,4 +44,8 @@ abstract class ActivityModule : LifecycleObserver {
         disposables.add(disposable)
     }
 
+    fun dispose() {
+        disposables.clear()
+    }
+
 }

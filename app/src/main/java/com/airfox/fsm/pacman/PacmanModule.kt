@@ -84,7 +84,7 @@ class PacmanModule @Inject constructor(private var pacman: Pacman,
             true -> collision()
             false ->
                 getNextPosition(ghost.getPosition())?.let { position ->
-                    Flowable.just(1).delay(500, TimeUnit.MILLISECONDS)
+                    Flowable.just(1).delay(250, TimeUnit.MILLISECONDS)
                         .subscribe { ghost.transition(MoveTo(position)) }
                 }
         }
@@ -92,15 +92,13 @@ class PacmanModule @Inject constructor(private var pacman: Pacman,
 
     private fun isCollision(): Boolean {
         return when (pacman.getPosition()) {
-            blinky.getPosition(),
-            pinky.getPosition(),
-            inky.getPosition(),
-            clyde.getPosition() -> true
+            blinky.getPosition(), pinky.getPosition(), inky.getPosition(), clyde.getPosition() -> true
             else -> false
         }
     }
 
     private fun collision() {
+        dispose()
         pacman.transition(Collision)
         blinky.transition(Collision)
         pinky.transition(Collision)
