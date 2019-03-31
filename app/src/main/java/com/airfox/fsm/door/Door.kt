@@ -24,20 +24,20 @@ class Door @Inject constructor(logger: Logger, initialState: State) : StateMachi
 /**
  * This is a more rigid implementation of the Closed state.
  */
-//object ClosedSophisticated : StateImpl() {
-//
-//    override fun enter(previous: State, action: Action): State {
-//        return when(action) {
-//            is Open -> this
-//            else -> throw IllegalStateException()
-//        }
-//    }
-//
-//    override fun exit(action: Action): State {
-//        return when(action) {
-//            is Open -> Opened.enter(this, action)
-//            else -> throw IllegalStateException()
-//        }
-//    }
-//
-//}
+object ClosedSophisticated : StateImpl() {
+
+    override fun enter(previous: State, action: Action): State {
+        return when(action) {
+            is Close -> this
+            else -> throw IllegalStateException()
+        }
+    }
+
+    override fun exit(action: Action): State {
+        return when(action) {
+            is Open -> Opened.enter(this, action)
+            else -> throw IllegalStateException()
+        }
+    }
+
+}
