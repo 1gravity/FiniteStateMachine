@@ -22,12 +22,4 @@ object InitModel {
         PreferenceUtil.putBoolean("USER_AUTHENTICATED", true)
     }
 
-    fun isInitialized(): Boolean {
-        return PreferenceUtil.getBoolean("APP_INITIALIZED", false)
-    }
-
-    fun setIsInitialized() {
-        PreferenceUtil.putBoolean("APP_INITIALIZED", true)
-    }
-
 }

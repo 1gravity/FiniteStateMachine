@@ -22,7 +22,10 @@ object AuthenticateUser : StateImpl() {
         return when (action) {
             is UserAuthenticated ->
                 return when (action.authenticated) {
-                    true -> InitializeApp.enter(this, action)
+                    true -> {
+                        InitModel.setIsAuthenticated()
+                        InitializeApp.enter(this, action)
+                    }
                     false -> AuthenticationFailed.enter(this, action)
                 }
             else -> super.exit(action)
