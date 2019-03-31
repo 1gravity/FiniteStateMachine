@@ -28,7 +28,7 @@ object ClosedSophisticated : StateImpl() {
 
     override fun enter(previous: State, action: Action): State {
         return when(action) {
-            is Close -> this
+            is Open -> this
             else -> throw IllegalStateException()
         }
     }
