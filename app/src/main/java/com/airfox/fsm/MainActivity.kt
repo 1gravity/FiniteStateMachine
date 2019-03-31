@@ -13,7 +13,6 @@ import com.airfox.fsm.door.DoorModule
 import com.airfox.fsm.pacman.PacmanModule
 import com.airfox.fsm.util.DaggerFactory
 import com.airfox.fsm.util.Logger
-import com.airfox.fsm.util.TinderExperiments
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -39,8 +38,6 @@ class MainActivity : AppCompatActivity() {
         DaggerFactory.component.inject(this)
 
         setContentView(R.layout.activity_main)
-
-        TinderExperiments.execute()
 
         // bottom navigation
         nav_view.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
