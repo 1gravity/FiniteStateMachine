@@ -13,16 +13,9 @@ class Collect(val pos: Position): StateImpl() {
     // the start position of the Pacman is [9, 9]
     constructor(): this(Position(9, 9))
 
-    override fun enter(previous: State, action: Action): State {
-        return when (action) {
-            is MoveTo, PacmanEatsPill, Collision -> exit(action)
-            else -> this
-        }
-    }
-
     override fun exit(action: Action): State {
         return when (action) {
-            is MoveTo -> Collect(action.pos)
+            is MoveTo -> Collect(action.pos).enter(this, action)
             is PacmanEatsPill -> Chase(pos).enter(this, action)
             is Collision -> Dead.enter(this, action)
             else -> this

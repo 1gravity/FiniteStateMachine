@@ -2,23 +2,17 @@ package com.airfox.fsm.pacman.pacman
 
 import com.airfox.fsm.base.Action
 import com.airfox.fsm.base.State
+import com.airfox.fsm.base.StateImpl
 import com.airfox.fsm.pacman.Collision
 import com.airfox.fsm.pacman.MoveTo
 import com.airfox.fsm.pacman.Position
 import com.airfox.fsm.pacman.PowerPillEnds
 
-class Chase(val pos: Position): State {
-
-    override fun enter(previous: State, action: Action): State {
-        return when (action) {
-            is MoveTo, PowerPillEnds, Collision -> exit(action)
-            else -> this
-        }
-    }
+class Chase(val pos: Position): StateImpl() {
 
     override fun exit(action: Action): State {
         return when (action) {
-            is MoveTo -> Chase(action.pos)
+            is MoveTo -> Chase(action.pos).enter(this, action)
             is PowerPillEnds -> Collect(pos).enter(this, action)
             is Collision -> Chase(pos).enter(this, action)
             else -> this

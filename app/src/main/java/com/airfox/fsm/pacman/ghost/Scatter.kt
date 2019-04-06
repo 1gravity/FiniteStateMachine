@@ -10,16 +10,9 @@ import com.airfox.fsm.pacman.PowerPillEnds
 
 class Scatter(val pos: Position): StateImpl() {
 
-    override fun enter(previous: State, action: Action): State {
-        return when (action) {
-            is MoveTo, PowerPillEnds, Collision -> exit(action)
-            else -> this
-        }
-    }
-
     override fun exit(action: Action): State {
         return when (action) {
-            is MoveTo -> Scatter(action.pos)
+            is MoveTo -> Scatter(action.pos).enter(this, action)
             is PowerPillEnds -> Chase(pos).enter(this, action)
             is Collision -> Dead.enter(this, action)
             else -> this
