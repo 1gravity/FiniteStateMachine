@@ -87,7 +87,7 @@ class AndroidActivity : AppCompatActivity() {
         tv_title.text = getString(R.string.splash_screen_title)
         tv_subtitle.text = getString(R.string.splash_screen_msg)
         btn_continue.setOnClickListener {
-            stateMachine.transition(SplashScreenShown(true))
+            stateMachine.transition(SplashScreenShown)
         }
     }
 

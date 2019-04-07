@@ -9,6 +9,7 @@ import com.airfox.fsm.pacman.pacman.Collect
 import com.airfox.fsm.pacman.pacman.Pacman
 import com.airfox.fsm.util.Logger
 import io.reactivex.Flowable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.util.ArrayList
 import java.util.concurrent.TimeUnit
@@ -37,11 +38,12 @@ class PacmanModule @Inject constructor(private var pacman: Pacman,
             .doOnSubscribe { addDisposable(it) }
             .subscribeOn(Schedulers.computation())
             .distinctUntilChanged()
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { dispatchPacmanState(it) }
     }
 
     @MainThread
-    private fun dispatchPacmanState(state: State) {
+    @Synchronized private fun dispatchPacmanState(state: State) {
         when (state) {
             is Collect -> movePacman()
             is com.airfox.fsm.pacman.pacman.Chase -> movePacman()
@@ -67,6 +69,7 @@ class PacmanModule @Inject constructor(private var pacman: Pacman,
             .doOnSubscribe { addDisposable(it) }
             .subscribeOn(Schedulers.computation())
             .distinctUntilChanged()
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { dispatchGhostState(stateMachine, it) }
     }
 
@@ -79,7 +82,7 @@ class PacmanModule @Inject constructor(private var pacman: Pacman,
         }
     }
 
-    private fun moveGhost(ghost: Ghost) {
+    @Synchronized private fun moveGhost(ghost: Ghost) {
         when (isCollision()) {
             true -> collision()
             false ->

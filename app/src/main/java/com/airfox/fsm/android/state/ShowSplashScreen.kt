@@ -13,7 +13,7 @@ object ShowSplashScreen : StateImpl() {
 
     override fun enter(previous: State, action: Action): State {
         return when (InitModel.isSplashScreenShown()) {
-            true -> exit(SplashScreenShown(true))
+            true -> exit(SplashScreenShown)
             false -> this
         }
     }
