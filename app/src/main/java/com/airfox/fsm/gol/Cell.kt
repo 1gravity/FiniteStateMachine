@@ -22,14 +22,14 @@ class Cell(private var state: State, private val valve: Valve) : Neighbor {
 
     fun isAliveNow() = state == State.ALIVE
 
-    fun setNeighbors(neighbors: ArrayList<Neighbor>) {
+    fun setNeighbors(neighbors: Collection<Neighbor>) {
         neighbors.forEachIndexed { index, neighbor -> subscribe(index, neighbor.isAlive()) }
     }
 
     private fun subscribe(index: Int, isAlive: Observable<Boolean>) {
         isAlive
             .compose(ObservableTransformers.valve<Boolean>(valve.isOpen()))
-            .subscribe { neighborsAreAlive.set(index, it ) }
+            .subscribe { neighborsAreAlive.set(index, it) }
     }
 
     fun step() {
