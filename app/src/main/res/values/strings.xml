@@ -2,6 +2,7 @@
     <string name="app_name">Finite State Machine</string>
     <string name="title_door">Door</string>
     <string name="title_pacman">Pacman</string>
+    <string name="title_gol">GamOfLife</string>
     <string name="title_android">Android</string>
 
     <string name="splash_screen_title">Welcome to Droidcon!</string>

@@ -33,6 +33,7 @@ dependencies {
     // RxJava
     implementation "io.reactivex.rxjava2:rxjava:$rxjava_lib_version"
     implementation "io.reactivex.rxjava2:rxandroid:$rxjava_android_lib_version"
+    compile "com.github.akarnokd:rxjava2-extensions:0.20.8"
 
     // Dagger 2
     implementation "com.google.dagger:dagger:$dagger_lib_version"

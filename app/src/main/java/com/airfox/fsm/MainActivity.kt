@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.airfox.fsm.android.AndroidModule
 import com.airfox.fsm.door.DoorModule
+import com.airfox.fsm.gol.GameOfLifeModule
 import com.airfox.fsm.pacman.PacmanModule
 import com.airfox.fsm.util.DaggerFactory
 import com.airfox.fsm.util.Logger
@@ -28,6 +29,7 @@ class MainActivity : AppCompatActivity() {
 
     @Inject lateinit var doorModule: DoorModule
     @Inject lateinit var pacmanModule: PacmanModule
+    @Inject lateinit var golModule: GameOfLifeModule
     @Inject lateinit var androidModule: AndroidModule
 
     @Inject lateinit var logger: Logger
@@ -58,6 +60,7 @@ class MainActivity : AppCompatActivity() {
 
         doorModule.registerActivity(this)
         pacmanModule.registerActivity(this)
+        golModule.registerActivity(this)
         androidModule.registerActivity(this)
     }
 
@@ -71,6 +74,7 @@ class MainActivity : AppCompatActivity() {
         val module = when (item.itemId) {
             R.id.navigation_door -> doorModule
             R.id.navigation_pacman -> pacmanModule
+            R.id.navigation_gol -> golModule
             R.id.navigation_android -> androidModule
             else -> null
         }
