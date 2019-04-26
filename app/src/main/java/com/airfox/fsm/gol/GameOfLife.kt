@@ -51,12 +51,8 @@ class GameOfLife(private val initialCells: Array<IntArray>, private val logger: 
 
     fun step() {
         valve.close()
-        stepCells()
+        cells.forEach { it.forEach { it.step() } }
         valve.open()
-    }
-
-    private fun stepCells() {
-        cells.forEach { cellRow -> cellRow.forEach { cell -> cell.step() } }
     }
 
     fun print() {
