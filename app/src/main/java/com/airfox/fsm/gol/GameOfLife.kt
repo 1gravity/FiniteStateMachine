@@ -1,7 +1,6 @@
 package com.airfox.fsm.gol
 
 import com.airfox.fsm.util.Logger
-import java.util.ArrayList
 
 class GameOfLife(private val initialCells: Array<IntArray>, private val logger: Logger) {
 
@@ -16,37 +15,23 @@ class GameOfLife(private val initialCells: Array<IntArray>, private val logger: 
         }
     }
 
-    // precomputed (x, y) offsets for neighbors
-    private val offsets = arrayListOf<Pair<Int, Int>>().apply {
-        add(Pair(-1, -1))
-        add(Pair(0, -1))
-        add(Pair(+1, -1))
-        add(Pair(-1, 0))
-        add(Pair(1, 0))
-        add(Pair(-1, 1))
-        add(Pair(0, 1))
-        add(Pair(1, 1))
-    }
-
     init {
         // calculate the neighbors
         cells.forEachIndexed { x, arrayOfCells ->
-            arrayOfCells.forEachIndexed { y, cell ->
-                val neighbors = offsets.fold(arrayListOf<Neighbor>()) { neighbors, offset ->
-                    checkAndAddNeighbor(x, y, offset, neighbors)
-                }
-                cell.setNeighbors(neighbors)
-            }
+            arrayOfCells.forEachIndexed { y, cell -> addNeighbors(cell, x, y) }
         }
     }
 
-    private fun checkAndAddNeighbor(x: Int, y: Int, offset: Pair<Int, Int>, neighbors: ArrayList<Neighbor>): ArrayList<Neighbor> {
-        val nX = x + offset.first
-        val nY = y + offset.second
-        if (nX >= 0 && nY >= 0 && nX < cells.size && nY < cells[nX].size) {
-            neighbors.add(cells[nX][nY])
+    private fun addNeighbors(cell: Cell, x: Int, y: Int) {
+        val neighbors = arrayListOf<Neighbor>()
+        for (nX in x-1..x+1) {
+            if (nX !in 0 until cells.size) continue
+            for (nY in y-1..y+1) {
+                if (nY !in 0 until cells[nX].size) continue
+                if (nX != x || nY != y) neighbors.add(cells[nX][nY])
+            }
         }
-        return neighbors
+        cell.setNeighbors(neighbors)
     }
 
     fun step() {
@@ -66,4 +51,3 @@ class GameOfLife(private val initialCells: Array<IntArray>, private val logger: 
     }
 
 }
-

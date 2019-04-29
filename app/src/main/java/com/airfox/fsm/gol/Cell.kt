@@ -25,7 +25,7 @@ class Cell(private var state: State, private val valve: Valve) : Neighbor {
     fun setNeighbors(neighbors: Collection<Neighbor>) {
         neighbors.forEachIndexed { index, neighbor ->
             neighbor.isAlive()
-                .compose(ObservableTransformers.valve<Boolean>(valve.isOpen()))
+                .compose(ObservableTransformers.valve(valve.isOpen()))
                 .subscribe { neighborsAreAlive.set(index, it) }
         }
     }
