@@ -8,10 +8,10 @@ import com.airfox.fsm.pacman.ghost.Ghost
 import com.airfox.fsm.pacman.pacman.Collect
 import com.airfox.fsm.pacman.pacman.Pacman
 import com.airfox.fsm.util.Logger
-import io.reactivex.Flowable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
-import java.util.ArrayList
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.schedulers.Schedulers
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.random.Random

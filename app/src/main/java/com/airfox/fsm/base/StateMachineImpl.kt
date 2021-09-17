@@ -2,8 +2,8 @@ package com.airfox.fsm.base
 
 import android.annotation.SuppressLint
 import com.airfox.fsm.util.Logger
-import io.reactivex.Observable
-import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.subjects.BehaviorSubject
 import javax.inject.Singleton
 import kotlin.properties.Delegates
 

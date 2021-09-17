@@ -1,7 +1,7 @@
 package com.airfox.fsm.gol
 
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.subjects.PublishSubject
 
 class Valve {
 

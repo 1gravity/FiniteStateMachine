@@ -1,7 +1,12 @@
 package com.airfox.fsm.gol
 
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.Observable
 
 interface Neighbor {
-    fun isAlive(): Observable<Boolean>
+    enum class State {
+        ALIVE,
+        DEAD
+    }
+
+    fun isAlive(): Observable<State>
 }

@@ -1,6 +1,6 @@
 package com.airfox.fsm.base
 
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.Observable
 
 interface StateMachine {
 

@@ -3,13 +3,14 @@ package com.airfox.fsm.android
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import com.airfox.fsm.R
+import com.airfox.fsm.databinding.ActivityLoginBinding
 import com.airfox.fsm.util.DaggerFactory
 import com.airfox.fsm.util.Logger
-import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
-import kotlinx.android.synthetic.main.activity_login.*
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Single
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -18,6 +19,8 @@ class LoginActivity : AppCompatActivity() {
 
     @Inject lateinit var logger: Logger
 
+    private lateinit var binding: ActivityLoginBinding
+
     private lateinit var progressDialogHolder: ProgressDialogHolder
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,13 +28,14 @@ class LoginActivity : AppCompatActivity() {
 
         DaggerFactory.component.inject(this)
 
-        setContentView(R.layout.activity_login)
+        binding = ActivityLoginBinding.inflate(LayoutInflater.from(this))
+        setContentView(binding.rootView)
 
         progressDialogHolder = ProgressDialogHolder(this)
 
         setResult(Activity.RESULT_CANCELED)
 
-        btn_login.setOnClickListener {
+        binding.btnLogin.setOnClickListener {
             Single.fromCallable { verifyLogin() }
                 .doOnSubscribe { progressDialogHolder.showLoadingDialog(R.string.logging_in) }
                 .delay(5, TimeUnit.SECONDS)
@@ -51,7 +55,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun verifyLogin(): Boolean {
-        return et_username.text.toString() == "emanuel" && et_password.text.toString() == "password"
+        return binding.etUsername.text.toString() == "emanuel" && binding.etPassword.text.toString() == "password"
     }
 
     override fun onPause() {

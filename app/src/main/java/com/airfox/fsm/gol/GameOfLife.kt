@@ -10,7 +10,7 @@ class GameOfLife(private val initialCells: Array<IntArray>, private val logger: 
     // create the initial grid of Cells
     private val cells = Array(initialCells.size) { x ->
         Array(initialCells[x].size) { y ->
-            val state = if (initialCells[x][y] == 1) Cell.State.ALIVE else Cell.State.DEAD
+            val state = if (initialCells[x][y] == 1) Neighbor.State.ALIVE else Neighbor.State.DEAD
             Cell(state, valve)
         }
     }
@@ -25,9 +25,9 @@ class GameOfLife(private val initialCells: Array<IntArray>, private val logger: 
     private fun addNeighbors(cell: Cell, x: Int, y: Int) {
         val neighbors = arrayListOf<Neighbor>()
         for (nX in x-1..x+1) {
-            if (nX !in 0 until cells.size) continue
+            if (nX !in cells.indices) continue
             for (nY in y-1..y+1) {
-                if (nY !in 0 until cells[nX].size) continue
+                if (nY !in cells[nX].indices) continue
                 if (nX != x || nY != y) neighbors.add(cells[nX][nY])
             }
         }

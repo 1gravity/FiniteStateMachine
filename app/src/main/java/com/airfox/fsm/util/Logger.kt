@@ -1,10 +1,11 @@
 package com.airfox.fsm.util
 
 import android.util.Log
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.subjects.PublishSubject
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.collections.ArrayList
 
 interface Logger {
     fun log(msg: String)

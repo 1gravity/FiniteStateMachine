@@ -1,42 +1,44 @@
 package com.airfox.fsm.gol
 
-import android.annotation.SuppressLint
-import hu.akarnokd.rxjava2.operators.ObservableTransformers
-import io.reactivex.Observable
-import io.reactivex.subjects.BehaviorSubject
+import com.jakewharton.rxrelay3.BehaviorRelay
+import hu.akarnokd.rxjava3.operators.ObservableTransformers
+import io.reactivex.rxjava3.core.Observable
 import java.util.*
+import com.airfox.fsm.gol.Neighbor.State
+import kotlin.properties.Delegates
 
-@SuppressLint("CheckResult")
-class Cell(private var state: State, private val valve: Valve) : Neighbor {
+class Cell(private var initialState: State, private val valve: Valve) : Neighbor {
 
-    enum class State {
-        ALIVE,
-        DEAD
+    private val emitter = BehaviorRelay.create<State>().apply { accept(initialState) }
+
+    override fun isAlive(): Observable<State> = emitter.map { it }
+
+    private val neighborStates = BitSet()
+
+    private var state by Delegates.observable(initialState) { _, oldState, newState ->
+        if (oldState != newState) {
+            emitter.accept(newState)
+        }
     }
-
-    private val emitter = BehaviorSubject.create<State>().apply { onNext(state) }
-
-    private val neighborsAreAlive = BitSet()
-
-    override fun isAlive(): Observable<Boolean> = emitter.map { it == State.ALIVE }
-
-    fun isAliveNow() = state == State.ALIVE
 
     fun setNeighbors(neighbors: Collection<Neighbor>) {
         neighbors.forEachIndexed { index, neighbor ->
             neighbor.isAlive()
                 .compose(ObservableTransformers.valve(valve.isOpen()))
-                .subscribe { neighborsAreAlive.set(index, it) }
+                .subscribe { state ->
+                    neighborStates.set(index, state == State.ALIVE)
+                }
         }
     }
 
+    fun isAliveNow() = state == State.ALIVE
+
     fun step() {
-        state = when (neighborsAreAlive.cardinality()) {
+        state = when (neighborStates.cardinality()) {
             2 -> state
             3 -> State.ALIVE
             else -> State.DEAD
         }
-        emitter.onNext(state)
     }
 
 }

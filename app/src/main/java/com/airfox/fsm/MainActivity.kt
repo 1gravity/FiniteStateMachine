@@ -9,15 +9,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.airfox.fsm.android.AndroidModule
+import com.airfox.fsm.databinding.ActivityMainBinding
 import com.airfox.fsm.door.DoorModule
 import com.airfox.fsm.gol.GameOfLifeModule
 import com.airfox.fsm.pacman.PacmanModule
 import com.airfox.fsm.util.DaggerFactory
 import com.airfox.fsm.util.Logger
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import kotlinx.android.synthetic.main.activity_main.*
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -39,23 +39,24 @@ class MainActivity : AppCompatActivity() {
 
         DaggerFactory.component.inject(this)
 
-        setContentView(R.layout.activity_main)
+        val binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
+        setContentView(binding.container)
 
         // bottom navigation
-        nav_view.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
+        binding.navView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
 
         // RecyclerView for messages
         val messages = ArrayList<String>()
-        rv_message.adapter = MessageAdapter(messages)
-        rv_message.layoutManager = LinearLayoutManager(this)
-        rv_message.setHasFixedSize(true)
+        binding.rvMessage.adapter = MessageAdapter(messages)
+        binding.rvMessage.layoutManager = LinearLayoutManager(this)
+        binding.rvMessage.setHasFixedSize(true)
 
         logger.logs()
             .doOnSubscribe { disposables.add(it) }
             .debounce(250, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                rv_message.adapter = MessageAdapter(it)
+                binding.rvMessage.adapter = MessageAdapter(it)
             }
 
         doorModule.registerActivity(this)

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.MainThread
 import androidx.appcompat.app.AlertDialog
@@ -14,15 +15,15 @@ import com.airfox.fsm.base.State
 import com.airfox.fsm.util.DaggerFactory
 import com.airfox.fsm.util.Logger
 import com.airfox.fsm.util.NetworkState
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_android.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import com.airfox.fsm.R
+import com.airfox.fsm.databinding.ActivityAndroidBinding
 import com.bumptech.glide.Glide
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.schedulers.Schedulers
 
 private const val LOGIN_REQUEST = 1
 private const val SIGNUP_REQUEST = 2
@@ -35,6 +36,8 @@ class AndroidActivity : AppCompatActivity() {
 
     private lateinit var progressDialogHolder: ProgressDialogHolder
 
+    private lateinit var binding: ActivityAndroidBinding
+
     private var disposables: CompositeDisposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,7 +45,8 @@ class AndroidActivity : AppCompatActivity() {
 
         DaggerFactory.component.inject(this)
 
-        setContentView(R.layout.activity_android)
+        binding = ActivityAndroidBinding.inflate(LayoutInflater.from(this))
+        setContentView(binding.rootView)
 
         progressDialogHolder = ProgressDialogHolder(this)
 
@@ -84,9 +88,9 @@ class AndroidActivity : AppCompatActivity() {
 
     private fun showSplashScreen() {
         showAndHide(false, true, false, true)
-        tv_title.text = getString(R.string.splash_screen_title)
-        tv_subtitle.text = getString(R.string.splash_screen_msg)
-        btn_continue.setOnClickListener {
+        binding.tvTitle.text = getString(R.string.splash_screen_title)
+        binding.tvSubtitle.text = getString(R.string.splash_screen_msg)
+        binding.btnContinue.setOnClickListener {
             stateMachine.transition(SplashScreenShown)
         }
     }
@@ -115,15 +119,15 @@ class AndroidActivity : AppCompatActivity() {
 
     private fun startAuthentication() {
         showAndHide(false, true, true, false)
-        tv_title.text = getString(R.string.welcome_screen_title)
-        tv_subtitle.text = getString(R.string.welcome_screen_msg)
-        btn_login.setOnClickListener {
+        binding.tvTitle.text = getString(R.string.welcome_screen_title)
+        binding.tvSubtitle.text = getString(R.string.welcome_screen_msg)
+        binding.btnLogin.setOnClickListener {
             Intent(this, LoginActivity::class.java).run { startActivityForResult(this, LOGIN_REQUEST) }
-            btn_login.setOnClickListener(null)
+            it.setOnClickListener(null)
         }
-        btn_signup.setOnClickListener {
+        binding.btnSignup.setOnClickListener {
             Intent(this, LoginActivity::class.java).run { startActivityForResult(this, SIGNUP_REQUEST) }
-            btn_signup.setOnClickListener(null)
+            it.setOnClickListener(null)
         }
     }
 
@@ -165,18 +169,18 @@ class AndroidActivity : AppCompatActivity() {
 
     private fun appIsReady() {
         showAndHide(true, false, false, false)
-        tv_title.text = getString(R.string.screen_title)
+        binding.tvTitle.text = getString(R.string.screen_title)
         Glide.with(this)
             .load(R.raw.giphy)
-            .into(image)
+            .into(binding.image)
     }
 
     private fun showAndHide(gif: Boolean, sub: Boolean, login: Boolean, next: Boolean) {
-        image.visibility = if (gif) View.VISIBLE else View.INVISIBLE
-        tv_subtitle.visibility = if (sub) View.VISIBLE else View.INVISIBLE
-        btn_login.visibility = if (login) View.VISIBLE else View.INVISIBLE
-        btn_signup.visibility = if (login) View.VISIBLE else View.INVISIBLE
-        btn_continue.visibility = if (next) View.VISIBLE else View.INVISIBLE
+        binding.image.visibility = if (gif) View.VISIBLE else View.INVISIBLE
+        binding.tvSubtitle.visibility = if (sub) View.VISIBLE else View.INVISIBLE
+        binding.btnLogin.visibility = if (login) View.VISIBLE else View.INVISIBLE
+        binding.btnSignup.visibility = if (login) View.VISIBLE else View.INVISIBLE
+        binding.btnContinue.visibility = if (next) View.VISIBLE else View.INVISIBLE
     }
 
     override fun onPause() {

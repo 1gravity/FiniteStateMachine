@@ -1,16 +1,16 @@
 package com.airfox.fsm.util
 
 import android.content.Context
-import io.reactivex.Completable
-import io.reactivex.CompletableEmitter
-import io.reactivex.Observer
-import io.reactivex.disposables.Disposable
-import io.reactivex.subjects.BehaviorSubject
 import android.net.Network
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.net.ConnectivityManager.NetworkCallback
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.CompletableEmitter
+import io.reactivex.rxjava3.core.Observer
+import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.subjects.BehaviorSubject
 
 object NetworkState : NetworkCallback() {
 
@@ -51,7 +51,8 @@ object NetworkState : NetworkCallback() {
 
 }
 
-private class NetworkObserver constructor(private val emitter: CompletableEmitter) : Observer<Boolean> {
+private class NetworkObserver constructor(private val emitter: CompletableEmitter) :
+    Observer<Boolean> {
     private var disposable: Disposable? = null
 
     override fun onSubscribe(disposable: Disposable) {
